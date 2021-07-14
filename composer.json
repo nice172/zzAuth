@@ -1,0 +1,23 @@
+{
+    "name": "root/zz-auth",
+    "description": "User authorization login component",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "nice",
+            "email": "354575573@qq.com"
+        }
+    ],
+    "require": {},
+    "extra": {
+        "laravel": {
+            "aliases": {
+                "zzAuth": "zzAuth\\Facades\\ZzAuth"
+            },
+            "providers": [
+                "zzAuth\\PackagesServiceProvider"
+            ]
+        }
+    }
+}
