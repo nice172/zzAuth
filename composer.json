@@ -1,5 +1,5 @@
 {
-    "name": "user-zzAuth",
+    "name": "zz/user-auth",
     "description": "User authorization login component",
     "type": "library",
     "license": "MIT",
