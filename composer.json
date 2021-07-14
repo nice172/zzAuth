@@ -1,5 +1,5 @@
 {
-    "name": "root/zz-auth",
+    "name": "user-zzAuth",
     "description": "User authorization login component",
     "type": "library",
     "license": "MIT",
@@ -10,6 +10,11 @@
         }
     ],
     "require": {},
+    "autoload": {
+        "psr-4": {
+            "zzAuth\\": "src/"
+        }
+    },
     "extra": {
         "laravel": {
             "aliases": {
