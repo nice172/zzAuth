@@ -54,7 +54,7 @@ class ZzRedirect
      */
     public function forward(string $ticket, \Closure $closure, ?array $claims)
     {
-        if (empty($ticket)) return throw new ValidateException('ticket不能为空');
+        if (empty($ticket)) throw new ValidateException('ticket不能为空');
         try {
             $accessToken = $this->getAccessToken();
         } catch (\Exception $e) {
