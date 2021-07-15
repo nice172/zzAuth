@@ -24,15 +24,16 @@ abstract class UserService
     public function getUser($clientId)
     {
         try {
+            $this->auth->guard()->invalidate();
+            $user = $this->auth->guard()->user();
+            if (empty($user)) throw new BusinessException('获取用户信息失败');
+            if ($user['status'] == 0) throw new BusinessException('用户已被禁用');
             if (!hash_equals($this->auth->guard()->getClaim('client'), $clientId)) {
                 throw new ValidateException('客户端异常');
             }
         } catch (\Exception $e) {
             throw new ValidateException($e->getMessage());
         }
-        $user = $this->auth->guard()->user();
-        if (empty($user)) throw new BusinessException('获取用户信息失败');
-        if ($user['status'] == 0) throw new BusinessException('用户已被禁用');
         return [
             'username' => $user['name'],
             'usertype' => $user['type'],
