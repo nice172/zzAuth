@@ -4,16 +4,29 @@ declare(strict_types=1);
 
 namespace zzAuth;
 
-/**
- * Class Auth
- * @package zzAuth
- * @author liaoyz 2021/7/14
- */
+use Illuminate\Http\Request;
+
 class ZzAuth
 {
 
-    public function guard($guard = null){
-        return auth('jwt');
+    protected Request $request;
+
+    public function __construct(Request $request)
+    {
+        $this->request = $request;
+    }
+
+    protected function withHeader()
+    {
+        $ssk = $this->request->get('ssk') ?: $this->request->get('token');
+        if (!empty($ssk)) {
+            $this->request->headers->set('Authorization', 'Bearer ' . $ssk);
+        }
+    }
+
+    public function guard($guard = null)
+    {
+        return auth('jwt')->setRequest($this->request);
     }
 
     public function check(): bool
@@ -21,11 +34,13 @@ class ZzAuth
         return $this->guard()->check();
     }
 
-    public function user(){
+    public function user()
+    {
         return $this->guard()->user();
     }
 
-    public function getToken(){
+    public function getToken()
+    {
         return $this->guard()->getToken();
     }
 
