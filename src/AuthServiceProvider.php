@@ -19,8 +19,8 @@ class AuthServiceProvider extends ServiceProvider implements DeferrableProvider
         $this->app->singleton('zzAuth', function () {
             return new ZzAuth();
         });
-        $this->app->singleton('redirect', function () {
-            return new Redirect();
+        $this->app->singleton('zzRedirect', function () {
+            return new ZzRedirect();
         });
     }
 
@@ -38,7 +38,7 @@ class AuthServiceProvider extends ServiceProvider implements DeferrableProvider
 
     public function provides()
     {
-        return ['zzAuth', 'redirect'];
+        return ['zzAuth', 'zzRedirect'];
     }
 
 }

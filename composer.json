@@ -18,10 +18,11 @@
     "extra": {
         "laravel": {
             "aliases": {
-                "zzAuth": "zzAuth\\Facades\\ZzAuth"
+                "zzAuth": "zzAuth\\Facades\\ZzAuth",
+                "zzRedirect": "zzAuth\\Facades\\ZzRedirect"
             },
             "providers": [
-                "zzAuth\\PackagesServiceProvider"
+                "zzAuth\\AuthServiceProvider"
             ]
         }
     }
