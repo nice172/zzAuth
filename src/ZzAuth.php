@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace zzAuth;
 
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\HeaderBag;
 
 class ZzAuth
 {
@@ -16,7 +17,7 @@ class ZzAuth
         $this->request = $request;
     }
 
-    protected function withHeader()
+    protected function withHeader(): HeaderBag
     {
         $ssk = $this->request->get('ssk') ?: $this->request->get('token');
         if (!empty($ssk)) {
