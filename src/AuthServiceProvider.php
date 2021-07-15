@@ -6,7 +6,7 @@ namespace zzAuth;
 use Illuminate\Contracts\Support\DeferrableProvider;
 use Illuminate\Support\ServiceProvider;
 
-class PackagesServiceProvider extends ServiceProvider implements DeferrableProvider
+class AuthServiceProvider extends ServiceProvider implements DeferrableProvider
 {
 
     /**
@@ -19,6 +19,9 @@ class PackagesServiceProvider extends ServiceProvider implements DeferrableProvi
         $this->app->singleton('zzAuth', function () {
             return new ZzAuth();
         });
+        $this->app->singleton('redirect', function () {
+            return new Redirect();
+        });
     }
 
     /**
@@ -30,12 +33,12 @@ class PackagesServiceProvider extends ServiceProvider implements DeferrableProvi
     {
         $this->publishes([
             __DIR__ . '/../config/zzconfig.php' => config_path('zzconfig.php')
-        ],'config');
+        ], 'config');
     }
 
     public function provides()
     {
-        return ['zzAuth'];
+        return ['zzAuth', 'redirect'];
     }
 
 }

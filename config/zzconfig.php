@@ -1,7 +1,7 @@
 <?php
 return [
-    'appId' => '',
-    'appSecret' => '',
-    'app_api' => '',
-    'redirect_url' => ''
+    'appId' => env('APPID', ''),
+    'appSecret' => env('APPSECRET', ''),
+    'app_api' => env('APP_API', ''),
+    'redirect_url' => env('REDIRECT_URL', 'http://room.wm3dao.com')
 ];
