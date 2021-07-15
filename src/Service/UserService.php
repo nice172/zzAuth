@@ -44,7 +44,7 @@ abstract class UserService
     public function refresh()
     {
         try {
-            $token = auth('jwt')->refresh();
+            $token = $this->auth->guard()->refresh();
         } catch (\Exception $exception) {
             throw new BusinessException('刷新失败');
         }
