@@ -6,23 +6,32 @@ namespace zzAuth\Service;
 use App\Models\User;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use zzAuth\Exception\BusinessException;
+use zzAuth\Exception\ValidateException;
+use zzAuth\ZzAuth;
 
 abstract class UserService
 {
+
+    protected ZzAuth $auth;
+
+    public function __construct(ZzAuth $auth)
+    {
+        $this->auth = $auth;
+    }
+
     abstract public function insert(JWTSubject $user);
 
     public function getUser($clientId)
     {
         try {
-            $user = auth('jwt')->user();
+            if (!hash_equals($this->auth->guard()->getClaim('client'), $clientId)) {
+                throw new ValidateException('客户端异常');
+            }
         } catch (\Exception $e) {
-            throw new BusinessException('Token验证失败');
+            throw new ValidateException($e->getMessage());
         }
-        if (!hash_equals(auth('jwt')->getClaim('client'), $clientId)) {
-            throw new BusinessException('Token验证失败');
-        }
-//        $model = UserService::findByUserId((string)$auth['id']);
-//        if (empty($model)) throw new BusinessException('获取用户信息失败');
+        $user = $this->auth->guard()->user();
+        if (empty($user)) throw new BusinessException('获取用户信息失败');
         if ($user['status'] == 0) throw new BusinessException('用户已被禁用');
         return [
             'username' => $user['name'],
