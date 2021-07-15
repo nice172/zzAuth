@@ -16,17 +16,18 @@ class ZzAuth
         $this->request = $request;
     }
 
-    protected function withHeader()
+    protected function withHeader(): Request
     {
         $ssk = $this->request->get('ssk') ?: $this->request->get('token');
         if (!empty($ssk)) {
             $this->request->headers->set('Authorization', 'Bearer ' . $ssk);
         }
+        return $this->request;
     }
 
     public function guard($guard = null)
     {
-        return auth('jwt')->setRequest($this->request);
+        return auth('jwt')->setRequest($this->withHeader());
     }
 
     public function check(): bool
