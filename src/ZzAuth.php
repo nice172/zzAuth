@@ -12,9 +12,21 @@ namespace zzAuth;
 class ZzAuth
 {
 
-    public function check()
-    {
+    public function guard($guard = null){
+        return auth('jwt');
+    }
 
+    public function check(): bool
+    {
+        return $this->guard()->check();
+    }
+
+    public function user(){
+        return $this->guard()->user();
+    }
+
+    public function getToken(){
+        return $this->guard()->getToken();
     }
 
 }

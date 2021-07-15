@@ -9,15 +9,9 @@ use zzAuth\Exception\BusinessException;
 
 abstract class UserService
 {
-    abstract public static function insert(JWTSubject $user);
+    abstract public function insert(JWTSubject $user);
 
-    /**
-     * @param $clientId
-     * @return array
-     * @throws BusinessException
-     * @author liaoyz 2021/7/9
-     */
-    public static function getUser($clientId)
+    public function getUser($clientId)
     {
         try {
             $user = auth('jwt')->user();
@@ -38,24 +32,17 @@ abstract class UserService
         ];
     }
 
-    /**
-     * @return string
-     * @author liaoyz 2021/7/9
-     */
-    public static function refresh()
+    public function refresh()
     {
         try {
             $token = auth('jwt')->refresh();
         } catch (\Exception $exception) {
-            return throw new BusinessException('刷新失败');
+            throw new BusinessException('刷新失败');
         }
         return $token;
     }
 
-    /**
-     * @param string $userId
-     */
-    public static function findByUserId(string $userId)
+    public function findByUserId(string $userId)
     {
         return User::where('outsideuid', '=', $userId)->first();
     }
