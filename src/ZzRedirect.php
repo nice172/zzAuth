@@ -11,6 +11,7 @@ use zzAuth\Exception\BusinessException;
 use zzAuth\Exception\ValidateException;
 use zzAuth\Lib\OpenApiConfig;
 use zzAuth\Lib\SignatureUtil;
+use zzAuth\Service\UserService;
 
 class ZzRedirect
 {
@@ -45,14 +46,14 @@ class ZzRedirect
 
     /**
      * @param string $ticket
-     * @param \Closure $closure
+     * @param UserService $userService
      * @param array|null $claims
      * @return mixed
      * @throws BusinessException
      * @throws InvalidArgumentException
      * @throws ValidateException
      */
-    public function forward(string $ticket, \Closure $closure, ?array $claims)
+    public function forward(string $ticket, UserService $userService, ?array $claims)
     {
         if (empty($ticket)) throw new ValidateException('ticket不能为空');
         try {
@@ -72,7 +73,9 @@ class ZzRedirect
             ]);
             $response = $this->httpRequest('/api/user/getUserInfo', $params, $header);
             if (!empty($response) && $response['code'] == 200) {
-                $token = JWTAuth::customClaims($claims)->fromSubject(call_user_func($closure, array_merge($user, $response['data'])));
+                $userData = array_merge($user, $response['data']);
+                //call_user_func($closure, array_merge($user, $response['data']))
+                $token = JWTAuth::customClaims($claims)->fromSubject($userService->insert($userData));
                 header('Location:' . config('zzconfig.redirect_url') . '/index?ssk=' . $token);
                 exit;
             }

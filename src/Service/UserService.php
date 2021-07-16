@@ -19,7 +19,7 @@ abstract class UserService
         $this->auth = $auth;
     }
 
-    abstract public function insert(JWTSubject $user);
+    abstract public function insert(array $user): JWTSubject;
 
     public function getUser($clientId)
     {
