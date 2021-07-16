@@ -15,6 +15,14 @@ use zzAuth\Service\UserService;
 
 class ZzRedirect
 {
+
+    private $header = [
+        'Accept' => 'application/json',
+        'X-Requested-With' => 'XMLHttpRequest',
+        'ApiVersion' => 'v1',
+        'Authorization' => ''
+    ];
+
     /**
      * @return string|null
      * @throws BusinessException
@@ -34,14 +42,10 @@ class ZzRedirect
         return $accessToken;
     }
 
-    private function buildHeader($accessToken): array
+    private function withHeader($key, $value): ZzRedirect
     {
-        return [
-            'Accept: application/json',
-            'Authorization: Bearer ' . $accessToken,
-            'X-Requested-With: XMLHttpRequest',
-            'ApiVersion: v1'
-        ];
+        $this->header[$key] = $value;
+        return $this;
     }
 
     /**
@@ -57,21 +61,22 @@ class ZzRedirect
     {
         if (empty($ticket)) throw new ValidateException('ticket不能为空');
         try {
-            $accessToken = $this->getAccessToken();
+            $accessToken = 'Bearer ' . $this->getAccessToken();
         } catch (\Exception $e) {
             throw $e;
         }
         $params = $this->requestParams([
             'ticket' => $ticket
         ]);
-        $header = $this->buildHeader($accessToken);
-        $response = $this->httpRequest('/api/user/getBasicInfo', $params, $header);
+        $this->withHeader('Authorization', $accessToken);
+        $response = $this->httpRequest('/api/user/getBasicInfo', $params);
         if (!empty($response) && $response['code'] == 200) {
             $user = $response['data'];
             $params = $this->requestParams([
                 'userID' => $user['userID']
             ]);
-            $response = $this->httpRequest('/api/user/getUserInfo', $params, $header);
+            $this->withHeader('ApiVersion', 'v2');
+            $response = $this->httpRequest('/api/user/getUserInfo', $params);
             if (!empty($response) && $response['code'] == 200) {
                 $userData = array_merge($user, $response['data']);
                 //call_user_func($closure, array_merge($user, $response['data']))
@@ -117,13 +122,18 @@ class ZzRedirect
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         if (!empty($data)) {
             $jsonData = json_encode($data);
-            $header[] = 'Content-Type: application/json';
-            $header[] = 'Content-Length: ' . strlen($jsonData);
+            $header['Content-Type'] = 'application/json';
+            $header['Content-Length'] = strlen($jsonData);
             curl_setopt($ch, CURLOPT_POST, true);
             curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonData);
         }
+        $header = array_merge($header, $this->header);
         if (!empty($header)) {
-            curl_setopt($ch, CURLOPT_HTTPHEADER, $header);
+            $headers = [];
+            foreach ($header as $key => $value) {
+                $headers[] = $key . ': ' . $value;
+            }
+            curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
         }
         $res = curl_exec($ch);
         curl_close($ch);
