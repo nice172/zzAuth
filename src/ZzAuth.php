@@ -10,9 +10,20 @@ use Symfony\Component\HttpFoundation\HeaderBag;
 class ZzAuth
 {
 
-    protected Request $request;
+    /**
+     * @var Request|null
+     */
+    protected ?Request $request;
 
-    public function __construct(Request $request)
+    public function __construct(Request $request = null)
+    {
+        $this->request = $request;
+    }
+
+    /**
+     * @param Request $request
+     */
+    public function setRequest(Request $request): void
     {
         $this->request = $request;
     }
