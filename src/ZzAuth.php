@@ -23,9 +23,10 @@ class ZzAuth
     /**
      * @param Request $request
      */
-    public function setRequest(Request $request): void
+    public function setRequest(Request $request): ZzAuth
     {
         $this->request = $request;
+        return $this;
     }
 
     protected function withHeader(): HeaderBag
