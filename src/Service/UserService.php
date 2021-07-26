@@ -24,10 +24,8 @@ abstract class UserService
     public function getUser($clientId)
     {
         try {
-            if (!hash_equals($this->auth->guard()->payload()->get('client'), $clientId)) {
-                throw new ValidateException('客户端异常');
-            }
-            $user = $this->auth->guard()->user();
+            $this->auth->checkClient($clientId);
+            $user = $this->auth->user();
             if (empty($user)) throw new BusinessException('获取用户信息失败');
             if ($user['status'] == 0) throw new BusinessException('用户已被禁用');
         } catch (\Exception $e) {

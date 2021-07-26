@@ -6,6 +6,7 @@ namespace zzAuth;
 
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\HeaderBag;
+use zzAuth\Exception\ValidateException;
 
 class ZzAuth
 {
@@ -44,8 +45,21 @@ class ZzAuth
         return auth('jwt')->setRequest($this->request);
     }
 
-    public function check(): bool
+    public function checkClient(string $clientId)
     {
+        if (!hash_equals($this->guard()->payload()->get('client'), $clientId)) {
+            throw new ValidateException('客户端异常');
+        }
+    }
+
+    /**
+     * @param string $clientId
+     * @return bool
+     * @throws ValidateException
+     */
+    public function check(string $clientId): bool
+    {
+        $this->checkClient($clientId);
         return $this->guard()->check();
     }
 
