@@ -73,10 +73,10 @@ class ZzRedirect
         if (!empty($response) && $response['code'] == 200) {
             $user = $response['data'];
             $params = $this->requestParams([
-                'userID' => $user['userID']
+                'userID' => $user['userID'],
+                'typeID' => $user['userTypeID']
             ]);
-            $this->withHeader('ApiVersion', 'v2');
-            $response = $this->httpRequest('/api/user/getUserInfo', $params);
+            $response = $this->httpRequest('/api/user/getFullInfo', $params);
             if (!empty($response) && $response['code'] == 200) {
                 $userData = array_merge($user, $response['data']);
                 //call_user_func($closure, array_merge($user, $response['data']))
