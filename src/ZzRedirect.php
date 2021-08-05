@@ -81,7 +81,7 @@ class ZzRedirect
                 $userData = array_merge($user, $response['data']);
                 //call_user_func($closure, array_merge($user, $response['data']))
                 $token = JWTAuth::customClaims($claims)->fromSubject($userService->insert($userData));
-                header('Location:' . config('zzconfig.redirect_url') . '/index?ssk=' . $token);
+                header('Location:' . config('zzconfig.redirect_url') . 'ssk=' . $token);
                 exit;
             }
         }
