@@ -51,13 +51,13 @@ class ZzRedirect
     /**
      * @param string $ticket
      * @param UserService $userService
-     * @param array|null $claims
+     * @param array $claims
      * @return mixed
      * @throws BusinessException
      * @throws InvalidArgumentException
      * @throws ValidateException
      */
-    public function forward(string $ticket, UserService $userService, ?array $claims)
+    public function forward(string $ticket, UserService $userService, array $claims = [])
     {
         if (empty($ticket)) throw new ValidateException('ticket不能为空');
         try {
@@ -137,6 +137,7 @@ class ZzRedirect
         }
         $res = curl_exec($ch);
         curl_close($ch);
-        return @json_decode($res, true);
+        $data = @json_decode((string)$res, true);
+        return is_array($data) ? $data : [];
     }
 }
